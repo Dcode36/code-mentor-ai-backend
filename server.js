@@ -14,7 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(clerkMiddleware({
-  apiKey: process.env.CLERK_API_KEY,
+  apiKey: process.env.CLERK_PUBLISHABLE_KEY,
   apiVersion: '1'
 }));
 
