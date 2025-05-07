@@ -26,5 +26,5 @@ app.use('/api/users', userRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/solutions', solutionRoutes);
 
-const PORT = 8900;
+const PORT = 8900 || process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
