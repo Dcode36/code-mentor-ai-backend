@@ -8,7 +8,7 @@ exports.submitSolution = async (req, res) => {
     try {
 
         // Validate the input
-       
+
         const user = await User.findOne({ userId: userId });
 
         if (!user) {
@@ -16,8 +16,6 @@ exports.submitSolution = async (req, res) => {
         }
         const encodedCode = Buffer.from(code).toString('base64');
         const stdinEncoded = stdin ? Buffer.from(stdin).toString('base64') : '';
-        console.log(encodedCode);
-        console.log(stdinEncoded);
         const payload = {
             language_id: language,
             source_code: encodedCode,
@@ -26,7 +24,7 @@ exports.submitSolution = async (req, res) => {
 
         const querystring = {
             base64_encoded: "true",
-            wait: "false",
+            wait: "true",
             fields: "*",
         };
 
@@ -43,39 +41,34 @@ exports.submitSolution = async (req, res) => {
         );
 
 
-        const submissionId = response.data.token;
-        console.log(submissionId);
 
-        const options = {
-            method: 'GET',
-            url: `https://judge0-ce.p.rapidapi.com/submissions/${submissionId}`,
-            params: {
-                base64_encoded: 'true',
-                fields: '*'
-            },
-            headers: {
-                'x-rapidapi-key': process.env.RAPID_API_KEY,
-                'x-rapidapi-host': 'judge0-ce.p.rapidapi.com'
-            }
-        };
-        const resultResponse = await axios.request(options);
+        const result = response.data;
+        const decodedSourceCode = Buffer.from(result.source_code, 'base64').toString('utf-8');
+        const decodedStdout = result.stdout ? Buffer.from(result.stdout, 'base64').toString('utf-8') : '';
+        const decodedStdin = result.stdin ? Buffer.from(result.stdin, 'base64').toString('utf-8') : '';
 
-        const result = resultResponse.data;
-        console.log(result);
         const newSolution = new Solution({
             userId,
             questionId,
-            code,
+            code: decodedSourceCode,
             language,
-            result: result, // Store the response data as an object
+            result: result,
             executionTime: result.time || 0,
-            stdin: result.stdin, // You can add any stdin value here
+            stdin: decodedStdin,
+            output: decodedStdout,  
         });
 
 
         await newSolution.save();
 
-        res.status(201).json({ data: result}); // Return the stored solution object
+        res.status(201).json({
+            data: {
+                ...result,
+                decodedSourceCode,
+                decodedStdout,
+                decodedStdin,
+            }
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to submit solution' });

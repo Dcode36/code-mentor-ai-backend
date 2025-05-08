@@ -35,6 +35,10 @@ const solutionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  output: {
+    type: String,
+    required: true,
+  },
 });
 
 const Solution = mongoose.model('Solution', solutionSchema);
