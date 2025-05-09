@@ -10,7 +10,7 @@ exports.getFormattedSolution = async (req, res) => {
       title,
       description,
       difficulty,
-      tags,
+
       sampleInput,
       sampleOutput,
       constraints,
@@ -34,9 +34,6 @@ ${description}
 
 ## Difficulty:
 ${difficulty}
-
-## Tags:
-${tags.join(', ')}
 
 ## Sample Input:
 ${sampleInput}

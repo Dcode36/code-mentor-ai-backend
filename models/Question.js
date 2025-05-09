@@ -25,6 +25,13 @@ const questionSchema = new mongoose.Schema({
   constraints: {
     type: String,
   },
+  boilerplateCode: {
+    JavaScript: { type: String },
+    Python: { type: String },
+    Java: { type: String },
+    Cplusplus: { type: String }
+  }
 }, { timestamps: true });
+
 
 module.exports = mongoose.model('Question', questionSchema);

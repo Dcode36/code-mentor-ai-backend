@@ -12,7 +12,7 @@ exports.registerUser = async (req, res) => {
 
             // Check if user already exists in MongoDB
             const existingUser = await User.findOne({ userId: clerkUser.id });
-
+            
             if (!existingUser) {
                 const newUser = new User({
                     userId: clerkUser.id,

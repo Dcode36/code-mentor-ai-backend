@@ -1,4 +1,3 @@
-// controllers/questionController.js
 const Question = require('../models/Question');
 
 exports.getAllQuestions = async (req, res) => {
@@ -14,8 +13,8 @@ exports.getQuestionById = async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
     if (!question) {
-      return res.status(404).json({ message: 'Question not found' })
-    };
+      return res.status(404).json({ message: 'Question not found' });
+    }
     res.json(question);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -24,7 +23,28 @@ exports.getQuestionById = async (req, res) => {
 
 exports.createQuestion = async (req, res) => {
   try {
-    const newQuestion = new Question(req.body);
+    const {
+      title,
+      description,
+      difficulty,
+      tags,
+      sampleInput,
+      sampleOutput,
+      constraints,
+      boilerplateCode,
+    } = req.body;
+
+    const newQuestion = new Question({
+      title,
+      description,
+      difficulty,
+      tags,
+      sampleInput,
+      sampleOutput,
+      constraints,
+      boilerplateCode,
+    });
+
     const savedQuestion = await newQuestion.save();
     res.status(201).json(savedQuestion);
   } catch (err) {
